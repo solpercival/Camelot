@@ -6,7 +6,7 @@ use validator::{
     ValidationError,
 };
 
-use crate::models::{ReceiveFileDetails, SendFileDetails, User};
+use crate::models::{ReceiveFileDetails, SentFileDetails, User};
 
 // DTO for sending file details
 // This struct is used to encapsulate the details of a file being sent
@@ -79,7 +79,7 @@ impl FilterUserDto {
     pub fn filter_user(user: &User) -> Self {
         Self {
             id: user.id.to_string(),
-            username: user.username.clone(),
+            username: user.name.clone(),
             email: user.email.clone(),
             public_key: user.public_key.clone(),
             created_at: user.created_at,
@@ -117,17 +117,17 @@ pub struct UserSendFileDto {
 // Implementation of methods for UserSendFileDto
 // This struct is used to filter send file details for responses
 impl UserSendFileDto {
-    pub fn filter_send_user_file(file_data: &SendFileDetails) -> Self {
+    pub fn filter_send_user_file(file_data: &SentFileDetails) -> Self {
         Self {
             file_id: file_data.file_id.to_string(),
-            file_name: file_data.filename.to_owned(),
+            file_name: file_data.file_name.to_owned(),
             recipient_email: file_data.recipient_email.to_owned(),
             expiration_date: file_data.expiration_date.unwrap_or_else(|| Utc::now()),
             created_at: file_data.created_at.unwrap_or_else(|| Utc::now()),
         }
     }
 
-    pub fn filter_send_user_files(user: &[SendFileDetails]) -> Vec<Self> {
+    pub fn filter_send_user_files(user: &[SentFileDetails]) -> Vec<Self> {
         user.iter()
             .map(Self::filter_send_user_file)
             .collect()
@@ -156,7 +156,7 @@ impl UserReceiveFileDto {
     pub fn filter_receive_user_file(file_data: &ReceiveFileDetails) -> Self {
         Self {
             file_id: file_data.file_id.to_string(),
-            file_name: file_data.filename.to_owned(),
+            file_name: file_data.file_name.to_owned(),
             sender_email: file_data.sender_email.to_owned(),
             expiration_date: file_data.expiration_date.unwrap_or_else(|| Utc::now()),
             created_at: file_data.created_at.unwrap_or_else(|| Utc::now()),
