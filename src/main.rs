@@ -3,13 +3,18 @@ mod models;
 mod dtos;
 mod error;
 mod db;
+mod utils;
+mod middleware;
+mod handler;
+mod router;
 
-use std::{process::exit, sync::Arc};
+use std::sync::Arc;
 
-use axum::{http::{header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE}, HeaderValue, Method}, Router};
+use axum::http::{header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE}, HeaderValue, Method};
 use config::Config;
 use db::DBClient;
 use dotenv::dotenv;
+use router::create_router;
 
 use sqlx::postgres::PgPoolOptions;
 use tower_http::cors::CorsLayer;
@@ -80,10 +85,12 @@ async fn main() {
         sched.start().await.unwrap();
     });
 
-    let app = Router::new().layer(cors.clone());
-    println!("Starting server on port {}", config.server_port);
+    let app = create_router(Arc::new(app_state.clone())).layer(cors.clone());
 
-    let listener = tokio::net::TcpListener::bind(format!("0.0.0:{}", &config.server_port))
-        .await.unwrap();
+    println!("Starting server on port {}", config.port);
+
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", &config.port))
+    .await.unwrap();
+
     axum::serve(listener, app).await.unwrap();
 }

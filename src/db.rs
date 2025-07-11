@@ -4,13 +4,14 @@ use sqlx::{Pool, Postgres};
 use uuid::Uuid;
 
 use crate::models::{File, ReceiveFileDetails, SentFileDetails, SharedLink, User};
+
 #[derive(Debug, Clone)]
 pub struct DBClient {
     pool: Pool<Postgres>,
 }
 
 impl DBClient {
-    pub fn new(pool: Pool<Postgres>) -> Self { 
+    pub fn new(pool: Pool<Postgres>) -> Self {
         DBClient { pool }
     }
 }
@@ -234,7 +235,7 @@ impl UserExt for DBClient {
         user_id: Uuid,
         file_name: String,
         file_size: i64,
-        recipient_user_id: Uuid,
+        recipient_user_ud: Uuid,
         password: String,
         expiration_date: DateTime<Utc>,
         encrypted_aes_key: Vec<u8>,
@@ -265,7 +266,7 @@ impl UserExt for DBClient {
             VALUES ($1, $2, $3, $4, NOW())
             "#,
             file_id,
-            recipient_user_id,
+            recipient_user_ud,
             password,
             expiration_date
         )

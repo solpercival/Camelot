@@ -11,9 +11,9 @@ use crate::models::{ReceiveFileDetails, SentFileDetails, User};
 // DTO for sending file details
 // This struct is used to encapsulate the details of a file being sent
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Validate)]
-pub struct RegisteredUserDto {
+pub struct RegisterUserDto {
     #[validate(length(min = 1, message = "Username must not be empty"))]
-    pub username: String,
+    pub name: String,
 
     #[validate(
         length(min = 1, message = "Email is required"),
@@ -98,7 +98,7 @@ pub struct UserData {
 // DTO for user responsible actions
 // This struct is used to encapsulate the user data and status for responses
 #[derive(Debug, Serialize, Deserialize)]
-pub struct UserResponsibleDto {
+pub struct UserResponseDto {
     pub status: String,
     pub data: UserData,
 }
@@ -214,9 +214,9 @@ pub struct UserPasswordUpdateDto {
 }
 
 #[derive(Serialize, Deserialize, Validate, Default, Debug, Clone)]
-pub struct SearchQueryByEmailDto {
+pub struct SearchQueryByEmailDTO {
     #[validate(length(min = 1, message = "Email is required"), email(message = "Invalid email format"))]
-    pub email: String,
+    pub query: String,
 }
 
 #[derive(Serialize, Deserialize, Validate, Default, Debug, Clone)]
@@ -285,7 +285,7 @@ fn validate_expiration_date(expiration_date: &str) -> Result<(), ValidationError
 }
 
 #[derive(Serialize, Deserialize, Debug, Validate, Clone, Default)]
-pub struct RetrieverFileDto {
+pub struct RetrieveFileDto {
     #[validate(length(min = 1, message = "Shared id is required"))]
     pub shared_id: String,
 
